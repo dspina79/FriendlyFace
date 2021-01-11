@@ -11,7 +11,6 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(entity: CoreUser.entity(), sortDescriptors: []) var coreUsers: FetchedResults<CoreUser>
-    
     @State private var users: [User] = [User]()
     
     var body: some View {
@@ -65,6 +64,7 @@ struct ContentView: View {
     }
     
     func loadData() {
+
         if coreUsers.isEmpty {
             // need to initially load from web
             print("Loading from web...")

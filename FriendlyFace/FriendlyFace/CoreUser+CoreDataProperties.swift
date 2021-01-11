@@ -81,7 +81,7 @@ extension CoreUser {
             let cf = CoreFriend(context: context)
             cf.id = f.id
             cf.name = f.name
-            self.friends?.adding(cf)
+            cf.user = self
         }
         
         self.about = usr.about
