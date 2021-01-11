@@ -9,25 +9,42 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: CoreUser.entity(), sortDescriptors: []) var coreUsers: FetchedResults<CoreUser>
+    
     @State private var users: [User] = [User]()
+    
     var body: some View {
         NavigationView {
             VStack {
                 List {
-                    ForEach(users, id: \.self) { user in
+                    ForEach(coreUsers, id: \.self) { user in
                         NavigationLink(
-                            destination: UserDetailView(user: user, users: self.users),
+                            destination: UserDetailView(user: user),
                             label: {
-                                Text(user.name)
+                                Text(user.wrappedName)
                             })
                     }
                 }.onAppear(perform: loadData)
-            }.navigationBarTitle(Text("Friendly Face"))
+            }
+            .navigationBarTitle(Text("Friendly Face"))
         }
     }
     
+    func loadDataIntoCore() {
+        print("Loading data into core...")
+        for u in self.users {
+            let cu = CoreUser(context: self.moc)
+            print("About to set record...")
+            cu.setrecord(from: u, with: self.moc)
+        }
+        
+        if moc.hasChanges {
+            try? self.moc.save()
+        }
+    }
     
-    func loadData() {
+    func loadFromWeb() {
         let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
         let request = URLRequest(url: url)
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -39,11 +56,23 @@ struct ContentView: View {
             let decodedValue = try JSONDecoder().decode([User].self, from: data)
                     print("Assigning")
                     users = decodedValue
+                    loadDataIntoCore()
                 
             } catch {
                 print(error.localizedDescription)
             }
         }.resume()
+    }
+    
+    func loadData() {
+        if coreUsers.isEmpty {
+            // need to initially load from web
+            print("Loading from web...")
+            loadFromWeb()
+        } else {
+            print("Core data already loadded with records!")
+        }
+        
     }
 }
 

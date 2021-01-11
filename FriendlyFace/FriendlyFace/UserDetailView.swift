@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct UserDetailView: View {
-    var user: User
-    var users: [User]
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: CoreUser.entity(), sortDescriptors: []) var users: FetchedResults<CoreUser>
+    
+    var user: CoreUser
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -17,7 +21,7 @@ struct UserDetailView: View {
                 HStack {
                     Text("Name: ")
                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                    Text(user.name)
+                    Text(user.wrappedName)
                 }
                 HStack {
                     Text("Age: ")
@@ -27,48 +31,48 @@ struct UserDetailView: View {
                 HStack {
                     Text("Company: ")
                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                    Text(user.company)
+                    Text(user.wrappedComany)
                 }
                 HStack {
                     Image(systemName: "envelope")
-                    Text(user.email)
+                    Text(user.wrappedEmail)
                 }
                 HStack {
                     Image(systemName: "mail")
-                    Text(user.address)
+                    Text(user.wrappedAddress)
                 }
                 
                 Section(header: Text("About").font(.headline)) {
-                    Text(user.about)
+                    Text(user.wrappedAbout)
                         .frame(width: 300)
                 }.padding([.leading,.top])
                 Section(header: Text("Tags").font(.headline)) {
-                    List(user.tags, id: \.self) { tag in
+                    List(user.wrappedTags, id: \.self) { tag in
                         Text(tag)
                     }
                 }.padding([.leading, .top])
                 
                 Section(header: Text("Friends").font(.headline)) {
-                    List(user.friends, id: \.self) { friend in
+                    List(user.wrappedFriends, id: \.self) { friend in
                         NavigationLink(
-                            destination: UserDetailView(user: self.getUser(userId: friend.id), users: self.users),
+                            destination: UserDetailView(user: self.getUser(userId: friend.wrappedId)),
                             label: {
-                                Text(friend.name)
+                                Text(friend.wrappedName)
                             })
                     }
                 }.padding([.leading, .top])
                 
             }
             .padding()
-            .navigationBarTitle(Text(user.name))
+            .navigationBarTitle(Text(user.wrappedName))
         }
         }
     }
     
     
-    func getUser(userId: UUID) -> User {
+    func getUser(userId: UUID) -> CoreUser {
         let user = self.users.first(where: {$0.id == userId})
-        return user ?? User.emptyUser
+        return user ?? CoreUser()
     }
 }
 
@@ -77,7 +81,7 @@ struct UserDetailView_Previews: PreviewProvider {
         let tags = ["tag1", "tag2", "tag3"]
         let friends: [Friend] = [Friend(id: UUID(), name: "Test Friend")]
         
-        let user: User = User(id: UUID(), isActive: true, name: "Test User", age: 33, company: "ABC Company", email: "testuser@nowhere.net", address: "123 Anywhere Drive", about: "This is the name and details of the user", registered: "2021-01-01", tags: tags, friends: friends)
-        UserDetailView(user: user, users: [User]())
+        let user: CoreUser = CoreUser()
+        UserDetailView(user: user)
     }
 }

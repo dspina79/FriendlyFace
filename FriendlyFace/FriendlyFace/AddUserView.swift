@@ -51,13 +51,22 @@ struct AddUserView: View {
                 }
             }
             .navigationBarTitle(Text("New User"))
-            .alert(isPresented: $showError) {
-                Alert.init(title: "Data Error", message: errMessage, dismissButton: .default(Text("Ok")))
-            }
+            
         }
     }
     
     func saveData() {
+        let cuser = CoreUser(context: self.moc)
+        cuser.name = self.name
+        cuser.address = self.address
+        cuser.age = Int16(self.age)!
+        cuser.about = self.about
+        cuser.registeredDate = ""
+        cuser.tags = ""
+        
+        if (self.moc.hasChanges) {
+            try? self.moc.save()
+        }
         
     }
     
@@ -68,6 +77,7 @@ struct AddUserView: View {
 
 struct AddUserView_Previews: PreviewProvider {
     static var previews: some View {
-        AddUserView()
+        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        AddUserView(moc: moc)
     }
 }

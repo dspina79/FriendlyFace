@@ -2,14 +2,13 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="19H114" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CoreFriend" representedClassName="CoreFriend" syncable="YES">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreUser" inverseName="friends" inverseEntity="CoreUser"/>
     </entity>
     <entity name="CoreUser" representedClassName="CoreUser" syncable="YES">
         <attribute name="about" optional="YES" attributeType="String"/>
         <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="age" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="attribute" optional="YES"/>
-        <attribute name="attribute1" optional="YES"/>
         <attribute name="company" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -17,14 +16,14 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="registeredDate" optional="YES" attributeType="String"/>
         <attribute name="tags" optional="YES" attributeType="String"/>
-        <relationship name="friends" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreFriend" inverseName="user" inverseEntity="CoreFriend"/>
+        <relationship name="friends" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CoreFriend" inverseName="user" inverseEntity="CoreFriend"/>
     </entity>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <elements>
+        <element name="CoreFriend" positionX="-54" positionY="63" width="128" height="88"/>
+        <element name="CoreUser" positionX="-63" positionY="-18" width="128" height="208"/>
         <element name="Item" positionX="-63" positionY="-18" width="128" height="44"/>
-        <element name="CoreUser" positionX="-63" positionY="-18" width="128" height="238"/>
-        <element name="CoreFriend" positionX="-54" positionY="63" width="128" height="73"/>
     </elements>
 </model>
